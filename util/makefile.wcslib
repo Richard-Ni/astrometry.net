@@ -7,17 +7,17 @@
 ifeq ($(origin WCSLIB_INC), environment)
   WCSLIB_EXISTS := 1
 else
-  X := $(shell pkg-config --exists wcslib && echo yes || echo no)
+  X := $(shell $(PKG_CONFIG) --exists wcslib && echo yes || echo no)
   ifeq ($(X), yes)
     WCSLIB_EXISTS ?= 1
   endif
 endif
 
-WCSLIB_INC ?= $(shell pkg-config --cflags wcslib 2>/dev/null)
-WCSLIB_LIB ?= $(shell pkg-config --libs wcslib 2>/dev/null)
+WCSLIB_INC ?= $(shell $(PKG_CONFIG) --cflags wcslib 2>/dev/null)
+WCSLIB_LIB ?= $(shell $(PKG_CONFIG) --libs wcslib 2>/dev/null)
 WCSLIB_SLIB ?=
 
-WCSLIB_HAS_WCSCCS ?= $(shell pkg-config --atleast-version=7.5 wcslib 2>/dev/null && echo 1 || echo 0)
+WCSLIB_HAS_WCSCCS ?= $(shell $(PKG_CONFIG) --atleast-version=7.5 wcslib 2>/dev/null && echo 1 || echo 0)
 
 #WCSLIB_LIB ?=
-#WCSLIB_SLIB ?= $(shell pkg-config --static wcslib 2>/dev/null)
+#WCSLIB_SLIB ?= $(shell $(PKG_CONFIG) --static wcslib 2>/dev/null)

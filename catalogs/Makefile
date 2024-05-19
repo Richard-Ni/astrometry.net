@@ -5,12 +5,14 @@ BASEDIR := ..
 COMMON := $(BASEDIR)/util
 DATA := .
 
+PKG_CONFIG = $(HOST_DIR)/bin/pkg-config
+
 all:
 .PHONY: all
 
 # Detect GSL -- this minimum version was chosen to match the version in gsl-an.
 # Earlier versions would probably work fine.
-SYSTEM_GSL ?= $(shell (pkg-config --atleast-version=1.14 gsl && echo "yes") || echo "no")
+SYSTEM_GSL ?= $(shell ($(PKG_CONFIG) --atleast-version=1.14 gsl && echo "yes") || echo "no")
 # Make this variable visible to recursive "make" calls
 export SYSTEM_GSL
 
@@ -120,6 +122,10 @@ ucac4tofits: ucac4tofits.o $(SLIB)
 ALL_OBJ += ucac4tofits.o
 
 ucac5tofits: ucac5tofits.o $(SLIB)
+	@echo "--------------------"
+	@echo "LDFLAGS="$(LDFLAGS)
+	@echo "LDFLAGS_DEF="$(LDFLAGS_DEF)
+	@echo "LDLIBS="$(LDLIBS)
 	$(CC) -o $@ $(LDFLAGS) $^ $(LDLIBS) -lbz2
 ALL_OBJ += ucac5tofits.o
 

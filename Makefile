@@ -66,16 +66,23 @@ version:
 check: pkgconfig
 .PHONY: check
 
+SWIG=$(HOST_DIR)/bin/swig
+PKG_CONFIG=$(HOST_DIR)/bin/pkg-config
+TARGET_INCLUDES= $(TARGET_DIR)/usr/include
+CFLAGS+= -I$(TARGET_INCLUDES)
+LDFLAGS_DEF= -L$(TARGET_DIR)/usr/lib
+
+
 # Just check that we have pkg-config, since it's needed to get
 # wcslib, cfitsio, cairo, etc config information.
 pkgconfig:
-	pkg-config --version || (echo -e "\nWe require the pkg-config package.\nGet it from http://www.freedesktop.org/wiki/Software/pkg-config" && false)
-	pkg-config --modversion cfitsio || (echo -e "\nWe require cfitsio but it was not found.\nGet it from http://heasarc.gsfc.nasa.gov/fitsio/\nOr on Ubuntu/Debian, apt-get install cfitsio-dev\nOr on Mac OS / Homebrew, brew install cfitsio\n" && false)
+	$(PKG_CONFIG) --version || (echo -e "\nWe require the pkg-config package.\nGet it from http://www.freedesktop.org/wiki/Software/pkg-config" && false)
+	$(PKG_CONFIG) --modversion cfitsio || (echo -e "\nWe require cfitsio but it was not found.\nGet it from http://heasarc.gsfc.nasa.gov/fitsio/\nOr on Ubuntu/Debian, apt-get install cfitsio-dev\nOr on Mac OS / Homebrew, brew install cfitsio\n" && false)
 .PHONY: pkgconfig
 
 # Detect GSL -- this minimum version was chosen to match the version in gsl-an.
 # Earlier versions would probably work fine.
-SYSTEM_GSL ?= $(shell (pkg-config --atleast-version=1.14 gsl && echo "yes") || echo "no")
+SYSTEM_GSL ?= $(shell ($(PKG_CONFIG) --atleast-version=1.14 gsl && echo "yes") || echo "no")
 # Make this variable visible to recursive "make" calls
 export SYSTEM_GSL
 
@@ -247,10 +254,10 @@ release:
 	for x in $(RELEASE_RMDIRS); do \
 		rm -R $(RELEASE_DIR)/$$x; \
 	done
-	(cd $(RELEASE_DIR)/util  && swig -python -I. -I../include/astrometry util.i)
-	(cd $(RELEASE_DIR)/plot && swig -python -I. -I../util -I../include/astrometry plotstuff.i)
-	(cd $(RELEASE_DIR)/sdss  && swig -python -I. cutils.i)
-	(cd $(RELEASE_DIR)/solver && swig -python -I. -I../include/astrometry solver.i)
+	(cd $(RELEASE_DIR)/util  && $(SWIG) -python -I. -I../include/astrometry util.i)
+	(cd $(RELEASE_DIR)/plot && $(SWIG) -python -I. -I../util -I../include/astrometry plotstuff.i)
+	(cd $(RELEASE_DIR)/sdss  && $(SWIG) -python -I. cutils.i)
+	(cd $(RELEASE_DIR)/solver && $(SWIG) -python -I. -I../include/astrometry solver.i)
 	cat $(RELEASE_DIR)/util/makefile.common | sed "s/AN_GIT_REVISION .=.*/AN_GIT_REVISION := $$(git describe)/" | sed "s/AN_GIT_DATE .=.*/AN_GIT_DATE := $$(git log -n 1 --format=%cd | sed 's/ /_/g')/" > $(RELEASE_DIR)/util/makefile.common.x && mv $(RELEASE_DIR)/util/makefile.common.x $(RELEASE_DIR)/util/makefile.common
 	cat $(RELEASE_DIR)/Makefile | sed "s/RELEASE_VER .=.*/RELEASE_VER := $(RELEASE_VER)/" > $(RELEASE_DIR)/Makefile.x && mv $(RELEASE_DIR)/Makefile.x $(RELEASE_DIR)/Makefile
 	tar cf $(RELEASE_DIR).tar $(RELEASE_DIR)
@@ -276,9 +283,9 @@ snapshot:
 	for x in $(SNAPSHOT_RMDIRS); do \
 		rm -R snapshot/$$x; \
 	done
-	(cd snapshot/util  && swig -python -I. -I../include/astrometry util.i)
-	(cd snapshot/solver && swig -python -I. -I../util -I../include/astrometry plotstuff.i)
-	(cd snapshot/sdss  && swig -python -I. cutils.i)
+	(cd snapshot/util  && $(SWIG) -python -I. -I../include/astrometry util.i)
+	(cd snapshot/solver && $(SWIG) -python -I. -I../util -I../include/astrometry plotstuff.i)
+	(cd snapshot/sdss  && $(SWIG) -python -I. cutils.i)
 	SSD=astrometry.net-$(shell date -u "+%Y-%m-%d-%H:%M:%S")-$(shell git describe); \
 	mv snapshot $$SSD; \
 	tar cf snapshot.tar $$SSD; \

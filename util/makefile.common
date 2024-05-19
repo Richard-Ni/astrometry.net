@@ -50,9 +50,9 @@ DATA_FINAL_DIR ?= $(FINAL_DIR)/data
 # only set CC if it hasn't already been set
 # (this allows the user to override it)
 ## can't use "CC ?= gcc" because CC gets a default value
-ifeq ($(origin CC), default)
-  CC := gcc
-endif
+# ifeq ($(origin CC), default)
+#   CC := gcc
+# endif
 
 # no default rules
 .SUFFIXES :=
@@ -184,7 +184,7 @@ else
     FLAGS_DEF += $(X)
   else
     # Try to guess -march
-    MACHINE:=$(shell uname -m)
+    MACHINE:=$(shell $(CC) -dumpmachine | cut -d- -f1)
     ifeq ($(MACHINE), i686)
       # gcc before version 3.1 doesn't support "pentium4"; use "i686" instead.
 
