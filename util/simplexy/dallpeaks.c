@@ -121,18 +121,18 @@ static int max_gaussian(float* image, int W, int H, float sigma,
 
 #define IMGTYPE float
 #define SUFFIX
-#include "dallpeaks.inc"
+#include "simplexy/dallpeaks.inc"
 #undef SUFFIX
 #undef IMGTYPE
 
 #define IMGTYPE uint8_t
 #define SUFFIX _u8
-#include "dallpeaks.inc"
+#include "simplexy/dallpeaks.inc"
 #undef IMGTYPE
 #undef SUFFIX
 
 #define IMGTYPE int16_t
 #define SUFFIX _i16
-#include "dallpeaks.inc"
+#include "simplexy/dallpeaks.inc"
 #undef IMGTYPE
 #undef SUFFIX
