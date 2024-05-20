@@ -18,8 +18,8 @@ ANUTILS_CFLAGS :=
 #  gsl
 #  wcslib (optional)
 
-include $(COMMON)/makefile.gsl
-include $(COMMON)/makefile.wcslib
+include $(COMMON)gsl.mk
+include $(COMMON)wcslib.mk
 
 ANUTILS_INC += $(ANBASE_INC)
 ANUTILS_CFLAGS += $(ANBASE_CFLAGS)
@@ -27,9 +27,9 @@ ANUTILS_LIB += $(ANBASE_LIB)
 ANUTILS_SLIB += $(ANBASE_SLIB)
 
 ifndef NO_QFITS
-include $(COMMON)/makefile.qfits
+include $(COMMON)/qfits.mk
 else
-include $(COMMON)/makefile.anbase
+include $(COMMON)/anbase.mk
 endif
 
 ifdef WCSLIB_EXISTS
@@ -57,4 +57,3 @@ endif
 ANUTILS_INC += $(GSL_INC) $(WCSLIB_INC)
 ANUTILS_SLIB += $(ANUTILS_LIB) $(GSL_SLIB) $(WCS_SLIB)
 ANUTILS_LIB += $(GSL_LIB) $(WCS_LIB) -lm
-

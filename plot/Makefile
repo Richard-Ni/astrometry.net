@@ -18,20 +18,20 @@ SYSTEM_GSL ?= $(shell (pkg-config --atleast-version=1.14 gsl && echo "yes") || e
 # Make this variable visible to recursive "make" calls
 export SYSTEM_GSL
 
-include $(COMMON)/makefile.common
-include $(COMMON)/makefile.anfiles
-include $(COMMON)/makefile.cfitsio
-include $(COMMON)/makefile.png
-include $(COMMON)/makefile.cairo
-include $(COMMON)/makefile.jpeg
-include $(COMMON)/makefile.netpbm
+include $(COMMON)/common.mk
+include $(COMMON)anfiles.mk
+include $(COMMON)cfitsio.mk
+include $(COMMON)/png.mk
+include $(COMMON)cairo.mk
+include $(COMMON)/jpeg.mk
+include $(COMMON)netpbm.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-    include $(COMMON)/makefile.os-features
+    include $(COMMON)os-features.mk
 endif
 
-$(COMMON)/makefile.os-features:
-	$(MAKE) -C $(COMMON) makefile.os-features
+$(COMMON)os-features.mk:
+	$(MAKE) -C $(COMMON)os-features.mk
 
 ifeq ($(HAVE_NETPBM),yes)
 else
@@ -199,7 +199,7 @@ ALL_TEST_LIBS := $(CAIRO_SLIB)
 tests: $(ALL_TEST_FILES)
 .PHONY: tests
 
-include $(COMMON)/makefile.tests
+include $(COMMON)tests.mk
 
 ALL_OBJ += $(ALL_TEST_FILES_O) $(ALL_TEST_FILES_MAIN_O)
 ALL_OBJ += $(ALL_TEST_EXTRA_OBJS) test.o
@@ -215,7 +215,7 @@ DEP_OBJ := $(ALL_OBJ)
 DEP_PREREQS := $(QFITS_LIB)
 
 CFLAGS += $(CAIRO_INC)
-include $(COMMON)/makefile.deps
+include $(COMMON)deps.mk
 
 .PHONY: clean
 

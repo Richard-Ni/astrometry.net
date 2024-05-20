@@ -3,7 +3,7 @@
 all:
 .PHONY: all
 
-include ../util/makefile.common
+include ../util/common.mk
 
 INTERNALS := \
 	kdint_ddd.o \

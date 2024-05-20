@@ -18,10 +18,10 @@
 
 # To set the install directory:
 #   make install INSTALL_DIR=/path/to/dir
-# or see util/makefile.common
+# or see util/common.mk
 
 # Turn off optimisation?  If the following line is commented-out, the default
-# is to turn optimization on.  See util/makefile.common for details.
+# is to turn optimization on.  See util/common.mk for details.
 #export OPTIMIZE = no
 
 all:
@@ -41,10 +41,10 @@ COMMON := $(BASEDIR)/util
 #          qfits-an/libqfits.a -- FITS files
 #            util/libanbase.a  -- basic stuff
 
-# Copy this stuff from makefile.common because it is needed to avoid checking
-# implicit rules for makefile.common itself!!
+# Copy this stuff from common.mk because it is needed to avoid checking
+# implicit rules for common.mk itself!!
 $(COMMON):
-$(COMMON)/makefile.common:
+$(COMMON)/common.mk:
 # no default rules
 .SUFFIXES :=
 # Cancel stupid implicit rules.
@@ -54,7 +54,7 @@ $(COMMON)/makefile.common:
 %: s.%
 %: SCCS/s.%
 
-include $(COMMON)/makefile.common
+include $(COMMON)/common.mk
 
 all: subdirs version
 .PHONY: all
@@ -235,11 +235,11 @@ install-indexes:
 	done
 
 reconfig:
-	-rm -f $(INCLUDE_DIR)/os-features-config.h util/makefile.os-features
+	-rm -f $(INCLUDE_DIR)/os-features-config.h utilos-features.mk
 	$(MAKE) -C util config
 .PHONY: reconfig
 
-config: util/os-features-config.h util/makefile.os-features
+config: util/os-features-config.h util/os-features.mk
 	$(MAKE) -C util config
 .PHONY: config
 
@@ -258,7 +258,7 @@ release:
 	(cd $(RELEASE_DIR)/plot && $(SWIG) -python -I. -I../util -I../include/astrometry plotstuff.i)
 	(cd $(RELEASE_DIR)/sdss  && $(SWIG) -python -I. cutils.i)
 	(cd $(RELEASE_DIR)/solver && $(SWIG) -python -I. -I../include/astrometry solver.i)
-	cat $(RELEASE_DIR)/util/makefile.common | sed "s/AN_GIT_REVISION .=.*/AN_GIT_REVISION := $$(git describe)/" | sed "s/AN_GIT_DATE .=.*/AN_GIT_DATE := $$(git log -n 1 --format=%cd | sed 's/ /_/g')/" > $(RELEASE_DIR)/util/makefile.common.x && mv $(RELEASE_DIR)/util/makefile.common.x $(RELEASE_DIR)/util/makefile.common
+	cat $(RELEASE_DIR)/util/common.mk | sed "s/AN_GIT_REVISION .=.*/AN_GIT_REVISION := $$(git describe)/" | sed "s/AN_GIT_DATE .=.*/AN_GIT_DATE := $$(git log -n 1 --format=%cd | sed 's/ /_/g')/" > $(RELEASE_DIR)/util/common.mk.x && mv $(RELEASE_DIR)/util/common.mk.x $(RELEASE_DIR)/util/common.mk
 	cat $(RELEASE_DIR)/Makefile | sed "s/RELEASE_VER .=.*/RELEASE_VER := $(RELEASE_VER)/" > $(RELEASE_DIR)/Makefile.x && mv $(RELEASE_DIR)/Makefile.x $(RELEASE_DIR)/Makefile
 	tar cf $(RELEASE_DIR).tar $(RELEASE_DIR)
 	gzip --best -c $(RELEASE_DIR).tar > $(RELEASE_DIR).tar.gz
@@ -301,8 +301,8 @@ LIBKD_RELEASE_SUBDIRS := qfits-an libkd doc \
 	util/ioutils.c util/mathutil.c util/fitsioutils.c \
 	util/fitsbin.c util/an-endian.c util/fitsfile.c util/log.c util/errors.c \
 	util/tic.c util/bl.c util/bl-nl.c \
-	util/__init__.py util/starutil_numpy.py util/makefile.common \
-	util/makefile.anbase util/makefile.deps \
+	util/__init__.py util/starutil_numpy.py util/common.mk \
+	utilanbase.mk utildeps.mk \
 	include/astrometry/anqfits.h include/astrometry/qfits_header.h \
 	include/astrometry/qfits_table.h include/astrometry/qfits_keywords.h \
 	include/astrometry/qfits_std.h include/astrometry/qfits_image.h \
@@ -432,4 +432,3 @@ report.txt: Makefile
 
 
 .SUFFIXES:            # Delete the default suffixes
-

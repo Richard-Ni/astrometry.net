@@ -761,7 +761,7 @@ ERROR MESSAGES during compiling
    We've seen this happen on Macs a couple of times.  Reboot and it goes
    away...
 
-2. ``makefile.deps:40: deps: No such file or directory``
+2. ``deps.mk:40: deps: No such file or directory``
 
    Not a problem.  We use automatic dependency tracking: "make" keeps
    track of which source files depend on which other source files.  These
@@ -821,4 +821,3 @@ post there, it is often very useful to see an example image that
 you're working with, so if you are willing to, you could try
 submitting one to the https://nova.astrometry.net web service, and
 include the link in your post.
-

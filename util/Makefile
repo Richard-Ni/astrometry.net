@@ -20,14 +20,14 @@ SYSTEM_GSL ?= $(shell (pkg-config --atleast-version=1.14 gsl && echo "yes") || e
 export SYSTEM_GSL
 
 # Redefine these (to be in the current directory) before including
-# makefile.anfiles.
+# anfiles.mk.
 ANBASE_LIB_FILE := libanbase.a
 ANUTILS_LIB_FILE := libanutils.a
 ANFILES_LIB_FILE := libanfiles.a
 
-include $(COMMON)/makefile.common
-include $(COMMON)/makefile.anfiles
-include $(COMMON)/makefile.qfits
+include $(COMMON)/common.mk
+include $(COMMON)anfiles.mk
+include $(COMMON)/qfits.mk
 
 SO=$(SHAREDLIB_SUFFIX)
 
@@ -66,15 +66,15 @@ SIMPLEXY_OBJ := dallpeaks.o dcen3x3.o dfind.o dmedsmooth.o dobjects.o \
 	dpeaks.o dselip.o dsigma.o dsmooth.o image2xy.o simplexy.o ctmf.o
 ANUTILS_OBJ += $(SIMPLEXY_OBJ)
 
-include $(COMMON)/makefile.cairo
-include $(COMMON)/makefile.jpeg
-include $(COMMON)/makefile.png
-include $(COMMON)/makefile.netpbm
+include $(COMMON)cairo.mk
+include $(COMMON)/jpeg.mk
+include $(COMMON)/png.mk
+include $(COMMON)netpbm.mk
 
 # D'oh
 ifneq ($(MAKECMDGOALS),clean)
   ifneq ($(MAKECMDGOALS),reconfig)
-    include $(COMMON)/makefile.os-features
+    include $(COMMON)os-features.mk
   endif
 endif
 
@@ -134,7 +134,7 @@ ANUTILS_H := an-bool.h an-endian.h an-opts.h an-thread-pthreads.h \
 
 ANUTILS_H_PATH := $(addprefix $(INCLUDE_DIR)/,$(ANUTILS_H))
 
-## ANFILES_DEPS, ANFILES_OBJ -- in makefile.anfiles
+## ANFILES_DEPS, ANFILES_OBJ -- in anfiles.mk
 
 ALL_OBJ := $(ANBASE_OBJ) $(ANUTILS_OBJ) $(ANFILES_OBJ) $(MISC_OBJ)
 
@@ -285,7 +285,7 @@ $(INCLUDE_DIR)/os-features-config.h: os-features-test.c
 	@echo "------------------------------"
 	@echo
 
-makefile.os-features: os-features-test.c
+os-features.mk: os-features-test.c
 	@echo
 	@echo "---- Error messages in the next few commands are not necessarily bugs ----"
 	@echo "     (we're checking how things works on your computer)"
@@ -301,7 +301,7 @@ makefile.os-features: os-features-test.c
 	   echo "HAVE_NETPBM := yes") \
 	|| (echo "# Astrometry.net didn't find netpbm; not setting HAVE_NETPBM."; \
 		echo "# See os-features-makefile.log for details."; \
-		echo "# To re-run this test, do 'make reconfig; make makefile.os-features' (in the 'util' directory)"; \
+		echo "# To re-run this test, do 'make reconfig; makeos-features.mk' (in the 'util' directory)"; \
 		echo "# Or to do it yourself, just uncomment this line:"; \
 		echo "# HAVE_NETPBM := yes")) \
 	; \
@@ -326,10 +326,10 @@ makefile.os-features: os-features-test.c
 	@echo "------------------------------"
 
 reconfig:
-	-rm -f '$(INCLUDE_DIR)/'os-features-config.h makefile.os-features
+	-rm -f '$(INCLUDE_DIR)/'os-features-config.hos-features.mk
 .PHONY: reconfig
 
-config: $(INCLUDE_DIR)/os-features-config.h makefile.os-features
+config: $(INCLUDE_DIR)/os-features-config.h os-features.mk
 .PHONY: config
 
 ALL_TARGETS := os-features-test.o \
@@ -356,7 +356,7 @@ ALL_TEST_EXTRA_OBJS =
 ALL_TEST_LIBS = $(ANFILES_SLIB)
 ALL_TEST_EXTRA_LDFLAGS = 
 
-include $(COMMON)/makefile.tests
+include $(COMMON)tests.mk
 
 DEP_OBJ += $(ALL_TEST_FILES_O)
 
@@ -408,7 +408,7 @@ clean:
 		$(ALL_OBJ) $(DEPS) deps cairoutils.o \
 		grab-stellarium-constellations \
 		$(PROGS) $(MAIN_PROGS) $(ALL_TARGETS) $(ALL_TESTS_CLEAN) \
-		cairoutils.dep makefile.os-features *.o *~ *.dep _util$(PYTHON_SO_EXT) util_wrap.c util.py deps \
+		cairoutils.depos-features.mk *.o *~ *.dep _util$(PYTHON_SO_EXT) util_wrap.c util.py deps \
 		os-features.log os-features-makefile.log \
 		os-features-test-netpbm os-features-test-netpbm-make \
 		report.txt
@@ -429,8 +429,8 @@ $(DEP_OBJ): $(INCLUDE_DIR)/os-features-config.h
 
 ifneq ($(MAKECMDGOALS),clean)
   ifneq ($(MAKECMDGOALS),reconfig)
-    ifneq ($(MAKECMDGOALS),makefile.os-features)
-      include $(COMMON)/makefile.deps
+    ifneq ($(MAKECMDGOALS),os-features.mk)
+      include $(COMMON)deps.mk
     endif
   endif
 endif

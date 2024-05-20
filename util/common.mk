@@ -65,7 +65,7 @@ DATA_FINAL_DIR ?= $(FINAL_DIR)/data
 %.awk: ;
 %.inc: ;
 %.ph: ;
-makefile.%: ;
+%.mk: ;
 Makefile: ;
 
 # Cancel stupid implicit rules.
@@ -350,4 +350,3 @@ AN_GIT_URL := https://github.com/dstndstn/astrometry.net
 CFLAGS_DEF += -DAN_GIT_REVISION='"$(AN_GIT_REVISION)"'
 CFLAGS_DEF += -DAN_GIT_DATE='"$(AN_GIT_DATE)"'
 CFLAGS_DEF += -DAN_GIT_URL='"$(AN_GIT_URL)"'
-

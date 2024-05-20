@@ -78,7 +78,7 @@ util/fits-flip-endian
 util/fitsgetext
 util/get-healpix
 util/hpsplit
-util/makefile.os-features
+util/os-features.mk
 util/os-features-makefile.log
 util/os-features.log
 util/pad-file
@@ -98,3 +98,4 @@ util/wcs-pv2sip
 report.txt
 .DS_Store
 .vscode
+.idea

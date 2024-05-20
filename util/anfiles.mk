@@ -16,9 +16,9 @@ ANFILES_CFLAGS :=
 #  anutils (+ qfits)
 
 ifndef NO_KDTREE
-include $(COMMON)/makefile.libkd
+include $(COMMON)libkd.mk
 else
-include $(COMMON)/makefile.anutils
+include $(COMMON)/anutils.mk
 endif
 
 ifndef NO_KDTREE
@@ -31,4 +31,3 @@ ANFILES_CFLAGS += $(ANUTILS_CFLAGS)
 ANFILES_INC += $(ANUTILS_INC)
 ANFILES_LIB += $(ANUTILS_LIB)
 ANFILES_SLIB += $(ANUTILS_SLIB)
-

@@ -7,8 +7,8 @@ COMMON := $(BASEDIR)/util
 all:
 .PHONY: all
 
-include $(COMMON)/makefile.common
-include $(COMMON)/makefile.libkd
+include $(COMMON)/common.mk
+include $(COMMON)/libkd.mk
 
 SO=$(SHAREDLIB_SUFFIX)
 
@@ -150,7 +150,7 @@ ALL_TEST_FILES = test_libkd test_libkd_io test_dualtree_nn
 ALL_TEST_EXTRA_OBJS =
 ALL_TEST_LIBS = $(SLIB)
 
-include $(COMMON)/makefile.tests
+include $(COMMON)tests.mk
 
 test_libkd: $(SLIB)
 test_libkd_io: $(SLIB)
@@ -176,9 +176,9 @@ tags:
 
 DEP_PREREQS := $(QFITS_LIB)
 
-include $(COMMON)/makefile.deps
+include $(COMMON)deps.mk
 
-# Borrowed from makefile.deps
+# Borrowed from deps.mk
 %_noio.dep : %.c
 	$(CC) $(DEP_ARGS) $< -MT $(addsuffix .o, $(basename $@)) $(DEP_OUT) $@
 

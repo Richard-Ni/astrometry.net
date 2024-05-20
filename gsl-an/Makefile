@@ -26,7 +26,7 @@ all: $(GSL_LIB)
 lib: $(GSL_LIB)
 .PHONY: lib
 
-include $(COMMON)/makefile.common
+include $(COMMON)/common.mk
 
 CFLAGS := $(CFLAGS_DEF)
 CFLAGS += -I.
@@ -209,7 +209,7 @@ config.h.in: ;
 DEP_OBJ := $(GSL_OBJS)
 # Don't try to include "*.dep" before config.h is built.
 ifeq ($(MAKECMDGOALS),$(GSL_LIB))
-include $(COMMON)/makefile.deps
+include $(COMMON)deps.mk
 endif
 
 install:

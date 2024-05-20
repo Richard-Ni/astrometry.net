@@ -15,7 +15,7 @@ LIBKD_LIB :=
 # $(LIBKD_NOIO_LIB_FILE):
 # 	$(MAKE) -C $(LIBKD_DIR) libkd-noio.a
 
-include $(COMMON)/makefile.anutils
+include $(COMMON)/anutils.mk
 
 LIBKD_INC += $(ANUTILS_INC)
 LIBKD_CFLAGS += $(ANUTILS_CFLAGS)

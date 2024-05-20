@@ -16,14 +16,14 @@ SYSTEM_GSL ?= $(shell ($(PKG_CONFIG) --atleast-version=1.14 gsl && echo "yes") |
 # Make this variable visible to recursive "make" calls
 export SYSTEM_GSL
 
-include $(COMMON)/makefile.common
+include $(COMMON)/common.mk
 
 # required for build-hd-tree
-include $(COMMON)/makefile.anfiles
+include $(COMMON)anfiles.mk
 # 2masstofits
-include $(COMMON)/makefile.zlib
-#include $(COMMON)/makefile.libkd
-#include $(COMMON)/makefile.anutils
+include $(COMMON)zlib.mk
+#include $(COMMON)/libkd.mk
+#include $(COMMON)/anutils.mk
 
 $(DATA)/%.txt: ;
 $(DATA)/NGC.csv: ;
@@ -199,7 +199,7 @@ ALL_TEST_FILES = test_tycho2 test_usnob test_nomad test_2mass test_hd \
 ALL_TEST_EXTRA_OBJS =
 ALL_TEST_LIBS = $(SLIB)
 ALL_TEST_EXTRA_LDFLAGS =
-include $(COMMON)/makefile.tests
+include $(COMMON)tests.mk
 
 $(ALL_TEST_FILES): $(SLIB)
 
@@ -213,6 +213,5 @@ clean:
 		openngc-entries.c openngc-names.c \
 
 ifneq ($(MAKECMDGOALS),clean)
-          include $(COMMON)/makefile.deps
+          include $(COMMON)deps.mk
 endif
-

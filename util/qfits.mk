@@ -13,7 +13,7 @@ QFITS_SLIB := $(QFITS_LIB_FILE)
 # $(QFITS_LIB_FILE):
 # 	$(MAKE) -C $(QFITS_DIR) libqfits.a
 
-include $(COMMON)/makefile.anbase
+include $(COMMON)/anbase.mk
 
 QFITS_INC += $(ANBASE_INC)
 QFITS_LIB += $(ANBASE_LIB)

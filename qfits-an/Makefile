@@ -18,8 +18,8 @@ all: $(QFITS_LIB_FILE)
 BASEDIR := ..
 COMMON := $(BASEDIR)/util
 
-include $(COMMON)/makefile.common
-include $(COMMON)/makefile.anbase
+include $(COMMON)/common.mk
+include $(COMMON)anbase.mk
 
 INC := $(ANBASE_INC)
 
@@ -55,10 +55,9 @@ install: $(QFITS_LIB_FILE) $(HEADERS)
 DEP_OBJ := $(OBJS)
 
 ifneq ($(MAKECMDGOALS),clean)
-include $(COMMON)/makefile.deps
+include $(COMMON)deps.mk
 endif
 
 clean:
 	rm -f $(QFITS_LIB_FILE) $(OBJS) *.dep *~ deps
 .PHONY: clean
-

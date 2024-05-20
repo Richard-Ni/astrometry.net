@@ -4,7 +4,7 @@ all:
 
 BASEDIR := ..
 COMMON := $(BASEDIR)/util
-include $(COMMON)/makefile.common
+include $(COMMON)/common.mk
 
 SO=$(SHAREDLIB_SUFFIX)
 
