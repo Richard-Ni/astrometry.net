@@ -1,6 +1,8 @@
 # This file is part of the Astrometry.net suite.
 # Licensed under a 3-clause BSD style license - see LICENSE
 
+include $(COMMON)/makefile.cross
+
 # On by default?  This doesn't seem to work
 #SYSTEM_GSL ?= $(shell $(PKG_CONFIG) --modversion gsl >/dev/null 2>/dev/null && echo yes)
 

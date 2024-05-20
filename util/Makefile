@@ -67,8 +67,8 @@ SIMPLEXY_OBJ := dallpeaks.o dcen3x3.o dfind.o dmedsmooth.o dobjects.o \
 ANUTILS_OBJ += $(SIMPLEXY_OBJ)
 
 include $(COMMON)/makefile.cairo
-include $(COMMON)/makefile.jpeg
-include $(COMMON)/makefile.png
+include $(COMMON)/makefile.jpeg.mk
+include $(COMMON)/makefile.png.mk
 include $(COMMON)/makefile.netpbm
 
 # D'oh

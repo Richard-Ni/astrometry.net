@@ -22,9 +22,9 @@ include $(COMMON)/makefile.common
 include $(COMMON)/makefile.anfiles
 include $(COMMON)/makefile.cfitsio
 # only for tweak-main.c
-include $(COMMON)/makefile.png
+include $(COMMON)/makefile.png.mk
 include $(COMMON)/makefile.cairo
-include $(COMMON)/makefile.jpeg
+include $(COMMON)/makefile.jpeg.mk
 include $(COMMON)/makefile.netpbm
 include $(COMMON)/makefile.cairo
 

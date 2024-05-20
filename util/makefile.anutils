@@ -18,6 +18,7 @@ ANUTILS_CFLAGS :=
 #  gsl
 #  wcslib (optional)
 
+include $(COMMON)/makefile.cross
 include $(COMMON)/makefile.gsl
 include $(COMMON)/makefile.wcslib
 
@@ -57,4 +58,3 @@ endif
 ANUTILS_INC += $(GSL_INC) $(WCSLIB_INC)
 ANUTILS_SLIB += $(ANUTILS_LIB) $(GSL_SLIB) $(WCS_SLIB)
 ANUTILS_LIB += $(GSL_LIB) $(WCS_LIB) -lm
-

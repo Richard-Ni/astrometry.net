@@ -21,9 +21,9 @@ export SYSTEM_GSL
 include $(COMMON)/makefile.common
 include $(COMMON)/makefile.anfiles
 include $(COMMON)/makefile.cfitsio
-include $(COMMON)/makefile.png
+include $(COMMON)/makefile.png.mk
 include $(COMMON)/makefile.cairo
-include $(COMMON)/makefile.jpeg
+include $(COMMON)/makefile.jpeg.mk
 include $(COMMON)/makefile.netpbm
 
 ifneq ($(MAKECMDGOALS),clean)

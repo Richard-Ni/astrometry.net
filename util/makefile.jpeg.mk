@@ -13,6 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with the Astrometry.net suite ; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-JPEG_INC ?= $(shell pkg-config --cflags libjpeg || echo)
-JPEG_LIB ?= $(shell pkg-config --libs libjpeg || echo "-ljpeg")
+include $(COMMON)/makefile.cross
+JPEG_INC ?= $(shell $(PKG_CONIFG) --cflags libjpeg || echo)
+JPEG_LIB ?= $(shell $(PKG_CONIFG) --libs libjpeg || echo "-ljpeg")

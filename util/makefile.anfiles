@@ -15,6 +15,8 @@ ANFILES_CFLAGS :=
 #  libkd
 #  anutils (+ qfits)
 
+include $(COMMON)/makefile.cross
+
 ifndef NO_KDTREE
 include $(COMMON)/makefile.libkd
 else
@@ -31,4 +33,3 @@ ANFILES_CFLAGS += $(ANUTILS_CFLAGS)
 ANFILES_INC += $(ANUTILS_INC)
 ANFILES_LIB += $(ANUTILS_LIB)
 ANFILES_SLIB += $(ANUTILS_SLIB)
-

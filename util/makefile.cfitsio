@@ -1,6 +1,8 @@
 # This file is part of the Astrometry.net suite.
 # Licensed under a 3-clause BSD style license - see LICENSE
 
+include $(COMMON)/makefile.cross
+
 # if CFITS_INC environment variable is set, assume CFITS_EXISTS.
 # Note also that CFITS_EXISTS can be overridden by the environment.
 ifeq ($(origin CFITS_INC), environment)
