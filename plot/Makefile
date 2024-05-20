@@ -14,7 +14,7 @@ all:
 
 # Detect GSL -- this minimum version was chosen to match the version in gsl-an.
 # Earlier versions would probably work fine.
-SYSTEM_GSL ?= $(shell (pkg-config --atleast-version=1.14 gsl && echo "yes") || echo "no")
+SYSTEM_GSL ?= $(shell ($(PKG_CONFIG) --atleast-version=1.14 gsl && echo "yes") || echo "no")
 # Make this variable visible to recursive "make" calls
 export SYSTEM_GSL
 

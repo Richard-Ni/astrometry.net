@@ -66,16 +66,16 @@ version:
 check: pkgconfig
 .PHONY: check
 
-# Just check that we have pkg-config, since it's needed to get
+# Just check that we have $(PKG_CONFIG), since it's needed to get
 # wcslib, cfitsio, cairo, etc config information.
 pkgconfig:
-	pkg-config --version || (echo -e "\nWe require the pkg-config package.\nGet it from http://www.freedesktop.org/wiki/Software/pkg-config" && false)
-	pkg-config --modversion cfitsio || (echo -e "\nWe require cfitsio but it was not found.\nGet it from http://heasarc.gsfc.nasa.gov/fitsio/\nOr on Ubuntu/Debian, apt-get install cfitsio-dev\nOr on Mac OS / Homebrew, brew install cfitsio\n" && false)
+	$(PKG_CONFIG) --version || (echo -e "\nWe require the $(PKG_CONFIG) package.\nGet it from http://www.freedesktop.org/wiki/Software/$(PKG_CONFIG)" && false)
+	$(PKG_CONFIG) --modversion cfitsio || (echo -e "\nWe require cfitsio but it was not found.\nGet it from http://heasarc.gsfc.nasa.gov/fitsio/\nOr on Ubuntu/Debian, apt-get install cfitsio-dev\nOr on Mac OS / Homebrew, brew install cfitsio\n" && false)
 .PHONY: pkgconfig
 
 # Detect GSL -- this minimum version was chosen to match the version in gsl-an.
 # Earlier versions would probably work fine.
-SYSTEM_GSL ?= $(shell (pkg-config --atleast-version=1.14 gsl && echo "yes") || echo "no")
+SYSTEM_GSL ?= $(shell ($(PKG_CONFIG) --atleast-version=1.14 gsl && echo "yes") || echo "no")
 # Make this variable visible to recursive "make" calls
 export SYSTEM_GSL
 
@@ -404,19 +404,19 @@ report:
 	-$(PYTHON) -V
 	@echo "PYTHONPATH: $${PYTHONPATH}"
 	@echo "PATH: $${PATH}"
-	@echo "pkg-config --cflags cfitsio:"
-	-pkg-config --cflags cfitsio
-	@echo "pkg-config --libs cfitsio:"
-	-pkg-config --libs cfitsio
-	@echo "pkg-config --cflags cairo:"
-	-pkg-config --cflags cairo
-	@echo "pkg-config --libs cairo: "
-	-pkg-config --libs cairo
+	@echo "$(PKG_CONFIG) --cflags cfitsio:"
+	-$(PKG_CONFIG) --cflags cfitsio
+	@echo "$(PKG_CONFIG) --libs cfitsio:"
+	-$(PKG_CONFIG) --libs cfitsio
+	@echo "$(PKG_CONFIG) --cflags cairo:"
+	-$(PKG_CONFIG) --cflags cairo
+	@echo "$(PKG_CONFIG) --libs cairo: "
+	-$(PKG_CONFIG) --libs cairo
 	@echo "SYSTEM_GSL: xxx$(SYSTEM_GSL)xxx"
-	@echo "pkg-config --modversion gsl"
-	-pkg-config --modversion gsl
-	@echo "pkg-config --atleast-version=1.14 gsl && echo \"yes\""
-	-pkg-config --atleast-version=1.14 gsl && echo yes
+	@echo "$(PKG_CONFIG) --modversion gsl"
+	-$(PKG_CONFIG) --modversion gsl
+	@echo "$(PKG_CONFIG) --atleast-version=1.14 gsl && echo \"yes\""
+	-$(PKG_CONFIG) --atleast-version=1.14 gsl && echo yes
 
 .PHONY: report
 
@@ -425,4 +425,3 @@ report.txt: Makefile
 
 
 .SUFFIXES:            # Delete the default suffixes
-

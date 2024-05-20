@@ -15,7 +15,7 @@ all:
 #   NO_QFITS := 1
 #   export NO_QFITS
 
-SYSTEM_GSL ?= $(shell (pkg-config --atleast-version=1.14 gsl && echo "yes") || echo "no")
+SYSTEM_GSL ?= $(shell ($(PKG_CONFIG) --atleast-version=1.14 gsl && echo "yes") || echo "no")
 # Make this variable visible to recursive "make" calls
 export SYSTEM_GSL
 
@@ -318,7 +318,7 @@ makefile.os-features: os-features-test.c
 	@echo
 	@echo "And, by the way, is WCSlib support being compiled in?"
 	@echo
-	pkg-config --exists wcslib && echo yes || echo no
+	$(PKG_CONFIG) --exists wcslib && echo yes || echo no
 	@echo
 	@echo "  WCSLIB_INC: $(WCSLIB_INC)"
 	@echo "  WCSLIB_LIB: $(WCSLIB_LIB)"
