@@ -39,12 +39,6 @@ add_definitions(-DAN_GIT_REVISION=\"${GIT_VERSION}\")
 
 add_definitions(-DAN_GIT_URL="https://github.com/dstndstn/astrometry.net")
 
-# find cairo library
-#find_library(CAIRO_LIBRARY cairo)
-#if (NOT CAIRO_LIBRARY)
-#    message(FATAL_ERROR "cairo library not found")
-#endif()
-
 #find cfitsio library
 find_library(CFITSIO_LIBRARY cfitsio)
 if (NOT CFITSIO_LIBRARY)
@@ -57,6 +51,12 @@ if (NOT GSL_LIBRARY)
     message(FATAL_ERROR "gsl library not found")
 endif()
 
+#find openblas library
+find_library(BLAS_LIBRARY openblas)
+if (NOT BLAS_LIBRARY)
+    message(FATAL_ERROR "openblas library not found")
+endif()
+
 #find jpeg library
 find_library(JPEG_LIBRARY jpeg)
 if (NOT JPEG_LIBRARY)
@@ -66,29 +66,11 @@ endif()
 find_package(BZip2 REQUIRED)
 include_directories(${BZIP2_INCLUDE_DIR})
 
-##find netpbm library
-#find_library(NETPBM_LIBRARY netpbm)
-#if (NOT NETPBM_LIBRARY)
-#    message(FATAL_ERROR "netpbm library not found")
-#endif()
-
-#find png library
-#find_library(PNG_LIBRARY png)
-#if (NOT PNG_LIBRARY)
-#    message(FATAL_ERROR "png library not found")
-#endif()
-
 #find zlib library
 find_library(ZLIB_LIBRARY z)
 if (NOT ZLIB_LIBRARY)
     message(FATAL_ERROR "zlib library not found")
 endif()
-
-## find wcslib library
-#find_library(WCSLIB_LIBRARY wcs)
-#if (NOT WCSLIB_LIBRARY)
-#    message(FATAL_ERROR "wcs library not found")
-#endif()
 
 file(GLOB_RECURSE HEADER_FILES "*/*.h")
 list(REMOVE_DUPLICATES HEADER_FILES)
@@ -261,7 +243,7 @@ target_link_libraries(solve-field
                       anbase
                       qfits
                       ${BZIP2_LIBRARIES}
-                      ${ZLIB_LIBRARY}
-                      ${JPEG_LIBRARY}
-                      ${CFITSIO_LIBRARY}
-                      gsl m)
+                      z
+                      jpeg
+                      cfitsio
+                      gsl openblas m)
