@@ -274,3 +274,4 @@ target_link_libraries(astrometry-engine astrometry anfiles anutils anbase qfits 
 target_include_directories(astrometry-engine PUBLIC include include/astrometry util)
 
 install(TARGETS solve-field DESTINATION /usr/bin)
+install(TARGETS astrometry-engine DESTINATION /usr/bin)
