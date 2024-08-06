@@ -152,12 +152,10 @@ add_library(libcatalogs STATIC catalogs/openngc.c
 
 target_include_directories(libcatalogs PUBLIC catalogs include/astrometry include)
 
-add_custom_command(
-        TARGET libcatalogs
-        PRE_BUILD
+execute_process(
+        COMMAND ${CMAKE_COMMAND} -E echo "generate openngc-entries.csv, openngc-names.csv, openngc-names.c, openngc-entries.c"
         COMMAND sh ${CMAKE_SOURCE_DIR}/catalogs/ngc.sh
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/catalogs
-        COMMENT "Generating openngc-entries.csv, openngc-names.csv, openngc-names.c, openngc-entries.c"
 )
 
 add_library(libanfiles STATIC util/multiindex.c
@@ -235,6 +233,7 @@ set(SIMPLEXY_SRC util/dallpeaks.c
                   util/ctmf.c)
 
 add_library(libanutils STATIC ${UTILS_SRC} ${SIMPLEXY_SRC})
+target_include_directories(libanutils PUBLIC include include/astrometry)
 
 target_link_libraries(solve-field libcatalogs libastrometry libanfiles libanutils libanbase
         ${BZIP2_LIBRARIES}
