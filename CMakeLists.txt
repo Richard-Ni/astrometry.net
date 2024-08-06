@@ -270,7 +270,7 @@ target_link_libraries(solve-field
                       gsl openblas m)
 
 add_executable(astrometry-engine solver/engine-main.c)
-target_link_libraries(astrometry-engine astrometry anfiles anutils anbase qfits kd gsl m)
+target_link_libraries(astrometry-engine astrometry anfiles anutils anbase qfits kd gsl openblas m)
 target_include_directories(astrometry-engine PUBLIC include include/astrometry util)
 
 install(TARGETS solve-field DESTINATION /usr/bin)
