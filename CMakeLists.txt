@@ -73,10 +73,10 @@ include_directories(${BZIP2_INCLUDE_DIR})
 #endif()
 
 #find png library
-find_library(PNG_LIBRARY png)
-if (NOT PNG_LIBRARY)
-    message(FATAL_ERROR "png library not found")
-endif()
+#find_library(PNG_LIBRARY png)
+#if (NOT PNG_LIBRARY)
+#    message(FATAL_ERROR "png library not found")
+#endif()
 
 #find zlib library
 find_library(ZLIB_LIBRARY z)
