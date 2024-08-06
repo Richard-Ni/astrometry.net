@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 PROJECT(AstrometryNet C CXX)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -129,8 +129,6 @@ set(BUILD_INDEX_SRCS solver/build-index.c
 add_library(libastrometry STATIC ${ENGINE_SRCS} ${BUILD_INDEX_SRCS})
 
 target_include_directories(libastrometry PUBLIC include/astrometry include util)
-#target_compile_definitions(libastrometry PRIVATE AN_GIT_REVISION=\"${GIT_VERSION}\")
-# target_compile_definitions(libastrometry PRIVATE AN_GIT_DATE=\"${GIT_DATE}\")
 
 add_library(libcatalogs STATIC catalogs/openngc.c
                                catalogs/brightstars.c
@@ -157,13 +155,9 @@ target_include_directories(libcatalogs PUBLIC catalogs include/astrometry includ
 add_custom_command(
         TARGET libcatalogs
         PRE_BUILD
-        COMMAND awk -F\\; -f openngc-entries-csv.awk < ./NGC.csv > openngc-entries.csv
-        COMMAND awk -F\\; -f openngc-names-csv.awk < ./NGC.csv > openngc-names.csv
-        COMMAND awk -F\\; -f openngc-names-c.awk < ./NGC.csv > openngc-names.c
-        COMMAND awk -F\\; -f openngc-entries-c.awk < ./NGC.csv > openngc-entries.c
+        COMMAND sh ${CMAKE_SOURCE_DIR}/catalogs/ngc.sh
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/catalogs
-        COMMENT "Execute command in ${CMAKE_SOURCE_DIR}/catalogs"
-        # COMMENT "Generating openngc-entries.csv, openngc-names.csv, openngc-names.c, openngc-entries.c"
+        COMMENT "Generating openngc-entries.csv, openngc-names.csv, openngc-names.c, openngc-entries.c"
 )
 
 add_library(libanfiles STATIC util/multiindex.c
@@ -186,7 +180,63 @@ add_library(libanfiles STATIC util/multiindex.c
 
 target_include_directories(libanfiles PUBLIC include include/astrometry)
 
-target_link_libraries(solve-field libastrometry libcatalogs libanfiles
+add_library(libanbase STATIC util/starutil.c
+                             util/mathutil.c
+                             util/bl-sort.c
+                             util/bl.c
+                             util/bt.c
+                             util/healpix-utils.c
+                             util/healpix.c
+                             util/permutedsort.c
+                             util/ioutils.c
+                             util/fileutils.c
+                             util/md5.c
+                             util/an-endian.c
+                             util/errors.c
+                             util/an-opts.c
+                             util/tic.c
+                             util/log.c
+                             util/datalog.c
+                             util/sparsematrix.c
+                             util/coadd.c
+                             util/convolve-image.c
+                             util/resample.c
+                             util/intmap.c
+                             util/histogram.c
+                             util/histogram2d.c)
+target_include_directories(libanbase PUBLIC include include/astrometry)
+
+set(UTILS_SRC util/sip-utils.c
+              util/fit-wcs.c
+              util/sip.c
+              util/anwcs.c
+              util/wcs-resample.c
+              util/gslutils.c
+              util/wcs-pv2sip.c
+              util/matchobj.c
+              util/fitsioutils.c
+              util/sip_qfits.c
+              util/fitstable.c
+              util/fitsbin.c
+              util/fitsfile.c
+              util/tic.c)
+
+set(SIMPLEXY_SRC util/dallpeaks.c
+                  util/dcen3x3.c
+                  util/dfind.c
+                  util/dmedsmooth.c
+                  util/dobjects.c
+                  util/dpeaks.c
+                  util/dselip.c
+                  util/dsigma.c
+                  util/dsmooth.c
+                  util/image2xy.c
+                  util/simplexy.c
+                  util/ctmf.c)
+
+add_library(libanutils STATIC ${UTILS_SRC} ${SIMPLEXY_SRC})
+
+target_link_libraries(solve-field libcatalogs libastrometry libanfiles libanutils libanbase
         ${BZIP2_LIBRARIES}
         ${ZLIB_LIBRARY}
         ${JPEG_LIBRARY}
