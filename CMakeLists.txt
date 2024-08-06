@@ -126,11 +126,11 @@ set(BUILD_INDEX_SRCS solver/build-index.c
                      solver/unpermute-quads.c
                      solver/merge-index.c)
 
-add_library(libastrometry STATIC ${ENGINE_SRCS} ${BUILD_INDEX_SRCS})
+add_library(astrometry STATIC ${ENGINE_SRCS} ${BUILD_INDEX_SRCS})
 
-target_include_directories(libastrometry PUBLIC include/astrometry include util)
+target_include_directories(astrometry PUBLIC include/astrometry include util)
 
-add_library(libcatalogs STATIC catalogs/openngc.c
+add_library(catalogs STATIC catalogs/openngc.c
                                catalogs/brightstars.c
                                catalogs/constellations.c
                                catalogs/tycho2-fits.c
@@ -150,7 +150,7 @@ add_library(libcatalogs STATIC catalogs/openngc.c
                                catalogs/hd.c
                                catalogs/constellation-boundaries.c)
 
-target_include_directories(libcatalogs PUBLIC catalogs include/astrometry include)
+target_include_directories(catalogs PUBLIC catalogs include/astrometry include)
 
 execute_process(
         COMMAND ${CMAKE_COMMAND} -E echo "generate openngc-entries.csv, openngc-names.csv, openngc-names.c, openngc-entries.c"
@@ -158,7 +158,7 @@ execute_process(
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/catalogs
 )
 
-add_library(libanfiles STATIC util/multiindex.c
+add_library(anfiles STATIC util/multiindex.c
                               util/index.c
                               util/indexset.c
                               util/codekd.c
@@ -176,9 +176,9 @@ add_library(libanfiles STATIC util/multiindex.c
                               util/matchfile.c
 )
 
-target_include_directories(libanfiles PUBLIC include include/astrometry)
+target_include_directories(anfiles PUBLIC include include/astrometry)
 
-add_library(libanbase STATIC util/starutil.c
+add_library(anbase STATIC util/starutil.c
                              util/mathutil.c
                              util/bl-sort.c
                              util/bl.c
@@ -202,7 +202,7 @@ add_library(libanbase STATIC util/starutil.c
                              util/intmap.c
                              util/histogram.c
                              util/histogram2d.c)
-target_include_directories(libanbase PUBLIC include include/astrometry)
+target_include_directories(anbase PUBLIC include include/astrometry)
 
 set(UTILS_SRC util/sip-utils.c
               util/fit-wcs.c
@@ -232,11 +232,36 @@ set(SIMPLEXY_SRC util/dallpeaks.c
                   util/simplexy.c
                   util/ctmf.c)
 
-add_library(libanutils STATIC ${UTILS_SRC} ${SIMPLEXY_SRC})
-target_include_directories(libanutils PUBLIC include include/astrometry)
+add_library(anutils STATIC ${UTILS_SRC} ${SIMPLEXY_SRC})
+target_include_directories(anutils PUBLIC include include/astrometry)
 
-target_link_libraries(solve-field libcatalogs libastrometry libanfiles libanutils libanbase
-        ${BZIP2_LIBRARIES}
-        ${ZLIB_LIBRARY}
-        ${JPEG_LIBRARY}
-        gsl m)
+
+add_library(qfits STATIC qfits-an/anqfits.c
+                            qfits-an/qfits_card.c
+                            qfits-an/qfits_convert.c
+                            qfits-an/qfits_error.c
+                            qfits-an/qfits_header.c
+                            qfits-an/qfits_image.c
+                            qfits-an/qfits_md5.c
+                            qfits-an/qfits_table.c
+                            qfits-an/qfits_time.c
+                            qfits-an/qfits_tools.c
+                            qfits-an/qfits_byteswap.c
+                            qfits-an/qfits_memory.c
+                            qfits-an/qfits_rw.c
+                            qfits-an/qfits_float.c
+                            qfits-an/md5.c)
+target_include_directories(qfits PUBLIC include include/astrometry)
+
+target_link_libraries(solve-field
+                      catalogs
+                      astrometry
+                      anfiles
+                      anutils
+                      anbase
+                      qfits
+                      ${BZIP2_LIBRARIES}
+                      ${ZLIB_LIBRARY}
+                      ${JPEG_LIBRARY}
+                      ${CFITSIO_LIBRARY}
+                      gsl m)
