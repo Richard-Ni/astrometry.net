@@ -40,10 +40,10 @@ add_definitions(-DAN_GIT_REVISION=\"${GIT_VERSION}\")
 add_definitions(-DAN_GIT_URL="https://github.com/dstndstn/astrometry.net")
 
 # find cairo library
-find_library(CAIRO_LIBRARY cairo)
-if (NOT CAIRO_LIBRARY)
-    message(FATAL_ERROR "cairo library not found")
-endif()
+#find_library(CAIRO_LIBRARY cairo)
+#if (NOT CAIRO_LIBRARY)
+#    message(FATAL_ERROR "cairo library not found")
+#endif()
 
 #find cfitsio library
 find_library(CFITSIO_LIBRARY cfitsio)
@@ -84,11 +84,11 @@ if (NOT ZLIB_LIBRARY)
     message(FATAL_ERROR "zlib library not found")
 endif()
 
-# find wcslib library
-find_library(WCSLIB_LIBRARY wcs)
-if (NOT WCSLIB_LIBRARY)
-    message(FATAL_ERROR "wcs library not found")
-endif()
+## find wcslib library
+#find_library(WCSLIB_LIBRARY wcs)
+#if (NOT WCSLIB_LIBRARY)
+#    message(FATAL_ERROR "wcs library not found")
+#endif()
 
 file(GLOB_RECURSE HEADER_FILES "*/*.h")
 list(REMOVE_DUPLICATES HEADER_FILES)
