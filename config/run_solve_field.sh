@@ -12,7 +12,7 @@ solve-field \
   --scale-high 6 \
   --scale-units arcsecperpix \
   --use-source-extractor \
-  --source-extractor-path source-extractor \
+  --source-extractor-path sex \
   --source-extractor-config /usr/local/share/sextractor/default.sex \
   --x-column X_IMAGE \
   --y-column Y_IMAGE \

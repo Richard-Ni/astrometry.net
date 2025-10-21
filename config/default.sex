@@ -16,14 +16,14 @@ PARAMETERS_NAME  /usr/local/share/sextractor/default.param
 
 DETECT_TYPE      CCD             # 检测类型：CCD 或 PHOTO
 DETECT_MINAREA   7               # 最小像素数
-DETECT_THRESH    7             # 检测阈值（sigma）
-ANALYSIS_THRESH  7            # 分析阈值（sigma）
+DETECT_THRESH    7               # 检测阈值（sigma）
+ANALYSIS_THRESH  7               # 分析阈值（sigma）
 
-FILTER           Y               # 是否使用滤波器
+FILTER           N               # ⚡ 关闭滤波器加速（从 Y 改为 N）
 FILTER_NAME      /usr/local/share/sextractor/default.conv
 
-DEBLEND_NTHRESH  32              # 去混合阈值数量
-DEBLEND_MINCONT  0.005           # 去混合最小对比度
+DEBLEND_NTHRESH  16              # ⚡ 减少去混合层级（从 32 改为 16）
+DEBLEND_MINCONT  0.01            # ⚡ 提高去混合阈值（从 0.005 改为 0.01）
 
 CLEAN            Y               # 清除假检测
 CLEAN_PARAM      1.0             # 清除参数
@@ -55,7 +55,7 @@ STARNNW_NAME     default.nnw     # 神经网络权重文件
 
 #------------------------------ Background -----------------------------------
 
-BACK_SIZE        64              # 背景网格尺寸（像素）
+BACK_SIZE        256            # 增大背景网格（从 64 改为 128，减少计算）
 BACK_FILTERSIZE  3               # 背景滤波器尺寸
 
 BACKPHOTO_TYPE   GLOBAL          # 背景光度测量类型
@@ -87,8 +87,8 @@ ASSOCSELEC_TYPE  MATCHED         # 关联选择类型
 
 #----------------------------- Miscellaneous ---------------------------------
 
-VERBOSE_TYPE     NORMAL          # 详细程度：QUIET, NORMAL 或 FULL
+VERBOSE_TYPE     NORMAL          # ⚡ 减少输出（从 NORMAL 改为 QUIET）
 WRITE_XML        N               # 写入 XML 文件
 XML_NAME         sex.xml         # XML 文件名
 
-NTHREADS         1               # 线程数（0=自动）
+NTHREADS         0               # ⚡ 自动多线程（从 1 改为 0，使用所有 CPU 核心）
