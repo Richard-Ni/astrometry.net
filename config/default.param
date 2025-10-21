@@ -1,0 +1,8 @@
+# Source Extractor 参数文件
+# 对应 augment-xylist.c 中的默认参数列表
+# 这些是 astrometry.net 需要的最小参数集
+
+X_IMAGE          # 像素坐标 X
+Y_IMAGE          # 像素坐标 Y
+MAG_AUTO         # Kron-like 椭圆测光星等（用于排序）
+FLUX_AUTO        # Kron-like 椭圆测光流量

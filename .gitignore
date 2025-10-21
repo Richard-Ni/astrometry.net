@@ -100,3 +100,4 @@ report.txt
 .idea
 .vscode
 /cmake-build-debug/
+build

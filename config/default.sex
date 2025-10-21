@@ -1,0 +1,94 @@
+#===============================================================================
+# Source Extractor 默认配置文件
+# 用于 astrometry.net solve-field --use-source-extractor
+# 此配置复制了 augment-xylist.c 中的默认行为
+#===============================================================================
+
+#-------------------------------- Catalog ------------------------------------
+
+CATALOG_NAME     output.cat      # 输出目录名（会被命令行覆盖）
+CATALOG_TYPE     FITS_1.0        # 必须是 FITS_1.0 格式（astrometry.net 要求）
+
+# 注意：使用绝对路径或确保这些文件在当前目录
+PARAMETERS_NAME  /usr/local/share/sextractor/default.param
+
+#------------------------------- Extraction ----------------------------------
+
+DETECT_TYPE      CCD             # 检测类型：CCD 或 PHOTO
+DETECT_MINAREA   7               # 最小像素数
+DETECT_THRESH    7             # 检测阈值（sigma）
+ANALYSIS_THRESH  7            # 分析阈值（sigma）
+
+FILTER           Y               # 是否使用滤波器
+FILTER_NAME      /usr/local/share/sextractor/default.conv
+
+DEBLEND_NTHRESH  32              # 去混合阈值数量
+DEBLEND_MINCONT  0.005           # 去混合最小对比度
+
+CLEAN            Y               # 清除假检测
+CLEAN_PARAM      1.0             # 清除参数
+
+MASK_TYPE        CORRECT         # 掩模类型
+
+#------------------------------ Photometry -----------------------------------
+
+PHOT_APERTURES   5               # 光圈测光的孔径（像素）
+PHOT_AUTOPARAMS  2.5, 3.5        # MAG_AUTO 的参数
+PHOT_PETROPARAMS 2.0, 3.5        # MAG_PETRO 的参数
+PHOT_AUTOAPERS   0.0,0.0         # MAG_AUTO 最小孔径（MJy 和 ADU）
+
+SATUR_LEVEL      50000.0         # 饱和水平
+SATUR_KEY        SATURATE        # 饱和水平关键字（FITS header）
+
+MAG_ZEROPOINT    0.0             # 星等零点
+MAG_GAMMA        4.0             # 伽马校正
+
+GAIN             0.0             # 探测器增益（e-/ADU）
+GAIN_KEY         GAIN            # 增益关键字（FITS header）
+
+PIXEL_SCALE      2.0             # 像素尺度（arcsec/pixel）
+
+#------------------------- Star/Galaxy Separation ----------------------------
+
+SEEING_FWHM      2             # 恒星 FWHM（arcsec）
+STARNNW_NAME     default.nnw     # 神经网络权重文件
+
+#------------------------------ Background -----------------------------------
+
+BACK_SIZE        64              # 背景网格尺寸（像素）
+BACK_FILTERSIZE  3               # 背景滤波器尺寸
+
+BACKPHOTO_TYPE   GLOBAL          # 背景光度测量类型
+BACKPHOTO_THICK  24              # 局部背景厚度（像素）
+
+BACK_TYPE        AUTO            # 背景类型
+BACK_VALUE       0.0             # 默认背景值
+
+#------------------------------ Check Image ----------------------------------
+
+CHECKIMAGE_TYPE  NONE            # 检查图像类型
+CHECKIMAGE_NAME  check.fits      # 检查图像文件名
+
+#--------------------- Memory (change with caution!) -------------------------
+
+MEMORY_OBJSTACK  3000            # 对象堆栈大小（KB）
+MEMORY_PIXSTACK  300000          # 像素堆栈大小（KB）
+MEMORY_BUFSIZE   1024            # 缓冲区大小（MB）
+
+#------------------------------- ASSOCiation ---------------------------------
+
+ASSOC_NAME       sky.list        # 关联列表名称
+ASSOC_DATA       2,3,4           # 关联数据列
+ASSOC_PARAMS     2,3,4           # 关联参数列
+ASSOC_RADIUS     2.0             # 匹配半径（像素）
+ASSOC_TYPE       NEAREST         # 关联类型
+
+ASSOCSELEC_TYPE  MATCHED         # 关联选择类型
+
+#----------------------------- Miscellaneous ---------------------------------
+
+VERBOSE_TYPE     NORMAL          # 详细程度：QUIET, NORMAL 或 FULL
+WRITE_XML        N               # 写入 XML 文件
+XML_NAME         sex.xml         # XML 文件名
+
+NTHREADS         1               # 线程数（0=自动）
