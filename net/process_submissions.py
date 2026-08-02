@@ -270,7 +270,7 @@ def dojob(job, userimage, log=None, solve_command=None, solve_locally=None,
     # Note, this must match Job.get_wcs_file().
     wcsfile = 'wcs.fits'
     corrfile = 'corr.fits'
-    axyflags = []
+    axyflags = ['--tag-all']
     axyargs = {
         '--out': axypath,
         '--scale-low': slo,
@@ -800,7 +800,7 @@ def job_callback(result):
 
 
 def main(dojob_nthreads, dosub_nthreads, refresh_rate, max_sub_retries,
-         solve_command, solve_locally):
+         solve_command, solve_locally, no_timeout):
 
     print('Tempdir:', tempfile.gettempdir())
     
@@ -862,7 +862,7 @@ def main(dojob_nthreads, dosub_nthreads, refresh_rate, max_sub_retries,
     lastsubs = []
     lastjobs = []
 
-    first_maxui = UserImage.objects.aggregate(Max('id'))['id__max']
+    first_maxui = UserImage.objects.aggregate(Max('id'))['id__max'] or 0
     print('Maximum UserImage id on startup:', first_maxui)
     n_jobs_done = 0
 
@@ -873,14 +873,14 @@ def main(dojob_nthreads, dosub_nthreads, refresh_rate, max_sub_retries,
         print()
 
         t_now = time.time() - t_start
-        quitnow = (t_now > maxtime)
+        quitnow = False if no_timeout else (t_now > maxtime)
 
         #print('Checking for new Submissions')
         newsubs = Submission.objects.filter(processing_started__isnull=True)
         if newsubs.count():
             print('Found', newsubs.count(), 'unstarted Submissions:', [s.id for s in newsubs])
 
-        maxui = UserImage.objects.aggregate(Max('id'))['id__max']
+        maxui = UserImage.objects.aggregate(Max('id'))['id__max'] or 0
         print('New UserImages:', maxui-first_maxui, '; Jobs completed:', n_jobs_done)
 
         print('Checking for UserImages without Jobs')
@@ -1040,10 +1040,20 @@ def main(dojob_nthreads, dosub_nthreads, refresh_rate, max_sub_retries,
                     #print('Adding', n_anon, 'bonus copies of the anonymous user')
                     users.extend([anon_user] * n_anon)
 
+                # Bump astrobin's priority
+                for user,n in cusers.most_common():
+                    if user.id == 298:
+                        users.extend([user] * 2)
+                        break
+
                 iu = np.random.randint(len(users))
                 user = users[iu]
+                # 2025-07-27 - for AstroBin, reverse the order (stack vs queue) to address a backlog
+                newuis_iter = newuis
+                if user.id == 298:
+                    newuis_iter = reversed(newuis)
                 print('Selected user', user)
-                for ui in newuis[:]:
+                for ui in newuis_iter:
                     if ui.user == user:
                         print('Selected ui', ui)
                         newuis.remove(ui)
@@ -1088,7 +1098,10 @@ if __name__ == '__main__':
     parser.add_option('--solve-locally',
                       help='Command to run astrometry-engine on this machine, not via ssh')
 
+    parser.add_option('--no-timeout', action='store_true', default=False,
+                      help='Do not exit after one day')
+
     opt,args = parser.parse_args()
 
     main(opt.jobthreads, opt.subthreads, opt.refreshrate, opt.maxsubretries,
-         opt.solve_command, opt.solve_locally)
+         opt.solve_command, opt.solve_locally, opt.no_timeout)

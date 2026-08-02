@@ -57,6 +57,18 @@ imagepattern = r'[0-9-]+'
 idpattern = r'[0-9-]+'
 tagpattern = r'[\s|\S]+'
 
+from astrometry.net.views.human import ask_human, am_human, test_human, not_human, test_human_2, poison
+
+urlpatterns.extend([
+    re_path(r'^ask_human$', ask_human),
+    re_path(r'^am_human$', am_human),
+    re_path(r'^not_human$', not_human),
+    re_path(r'^test$', test_human),
+    re_path(r'^test2/(?P<user_image_id>' + idpattern + r')/?$', test_human_2),
+    re_path(r'^poison/(?P<depth>' + idpattern + r')/(?P<num>' + idpattern + r')/?$',
+            poison),
+])
+
 from astrometry.net.views.submission import upload_file, status, job_log_file, job_log_file2, index
 urlpatterns.extend([
     re_path(r'^upload/?$', upload_file, name='upload-file'),
@@ -92,9 +104,9 @@ urlpatterns.extend([
 
 from astrometry.net.views.image import (
     index, index_tag, annotated_image, grid_image, index_location, index_nearby, index_recent, index_all, index_by_user,
-    index_user, index_album, hide, unhide, user_image, edit, search, serve_image, serve_thumbnail_image, image_set,
+    index_user, index_album, hide, unhide, user_image, edit, search, serve_image, wwt_serve_image, serve_thumbnail_image, image_set,
     onthesky_image, sdss_image, galex_image, unwise_image, legacysurvey_image, red_green_image, extraction_image, wcs_file, new_fits_file,
-    kml_file, rdls_file, axy_file, corr_file)
+    kml_file, rdls_file, axy_file, image_rd_file, corr_file)
 urlpatterns.extend([
     re_path(r'^annotated_(?P<size>full|display)/(?P<jobid>' + jobpattern + r')/?', annotated_image, name='annotated_image'),
     re_path(r'^grid_(?P<size>full|display)/(?P<jobid>' + jobpattern + r')/?', grid_image, name='grid_image'),
@@ -113,6 +125,7 @@ urlpatterns.extend([
     re_path(r'^user_images/(?P<user_image_id>' + idpattern + r')/edit/?$', edit, name='image_edit'),
     re_path(r'^user_images/search/?$', search, name='image-search'),
     re_path(r'^image/(?P<id>' + imagepattern + r')/?$', serve_image, name='serve_image'),
+    re_path(r'^wwt_image/(?P<id>' + imagepattern + r')/?$', wwt_serve_image, name='wwt_serve_image'),
     re_path(r'^thumbnail_of_image/(?P<id>' + imagepattern + r')/?$', serve_thumbnail_image, name='serve_thumbnail_image'),
     re_path(r'^images/(?P<category>\w+)/(?P<id>' + idpattern + r')/?$', image_set),
     re_path(r'^sky_plot/zoom(?P<zoom>[0-3])/(?P<calid>' + idpattern + r')/?$', onthesky_image, name='onthesky_image'),
@@ -127,6 +140,7 @@ urlpatterns.extend([
     re_path(r'^kml_file/(?P<jobid>' + idpattern + r')/?$', kml_file, name='kml-file'),
     re_path(r'^rdls_file/(?P<jobid>' + idpattern + r')/?$', rdls_file, name='rdls-file'),
     re_path(r'^axy_file/(?P<jobid>' + idpattern + r')/?$', axy_file, name='axy-file'),
+    re_path(r'^image_rd_file/(?P<jobid>' + idpattern + r')/?$', image_rd_file, name='image-rd-file'),
     re_path(r'^corr_file/(?P<jobid>' + idpattern + r')/?$', corr_file, name='corr-file'),
 ])
 #     
@@ -195,7 +209,7 @@ urlpatterns.extend([
     re_path(r'^api/jobs/(?P<job_id>' + idpattern + r')/tags/?$', tags, name='api_tags'),
     re_path(r'^api/jobs/(?P<job_id>' + idpattern + r')/machine_tags/?$', machine_tags, name='api_machine_tags'),
     re_path(r'^api/jobs/(?P<job_id>' + idpattern + r')/objects_in_field/?$', objects_in_field, name='api_objects_in_field'),
-    re_path(r'^api/jobs/(?P<job_id>' + idpattern + r')/annotations/?$', annotations_in_field, name='api_annotations_in_field'),
+    re_path(r'^api/jobs/(?P<job_id>(' + idpattern + r'|JOBID))/annotations/?$', annotations_in_field, name='api_annotations_in_field'),
     re_path(r'^api/jobs/(?P<job_id>' + idpattern + r')/info/?$', job_info, name='api_job_info'),
     re_path(r'^api/jobs_by_tag/?$', jobs_by_tag, name='api_jobs_by_tag'),
     #(r'^api/logout/?', 'logout'),

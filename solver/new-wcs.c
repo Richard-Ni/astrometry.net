@@ -169,7 +169,7 @@ int new_wcs(const char* infn, int extension,
 
         if (key_matches(key, re1, exclude_input, NE1, &imatch)) {
             logverb("Regular expression matched: \"%s\", key \"%s\".\n", exclude_input[imatch], key);
-            snprintf(newkey, FITS_LINESZ+1, "Original key: \"%s\"", key);
+            snprintf(newkey, FITS_LINESZ+1, "Original key: \"%.64s\"", key);
             qfits_header_append(outhdr, "COMMENT", newkey, NULL, NULL);
             // Completely skip the END card, since _ND is not a valid line.
             if (streq(key, "END"))
@@ -190,9 +190,9 @@ int new_wcs(const char* infn, int extension,
                 snprintf(newkey, FITS_LINESZ+1, "Original key: \"%s\"", key);
                 qfits_header_append(outhdr, "COMMENT", newkey, NULL, NULL);
             }
-            snprintf(newkey, FITS_LINESZ+1, " = %s", val);
+            snprintf(newkey, FITS_LINESZ+1, " = %.77s", val);
             qfits_header_append(outhdr, "COMMENT", newkey, NULL, NULL);
-            snprintf(newkey, FITS_LINESZ+1, " / %s", comment);
+            snprintf(newkey, FITS_LINESZ+1, " / %.77s", comment);
             qfits_header_append(outhdr, "COMMENT", newkey, NULL, NULL);
             continue;
         }
@@ -230,9 +230,9 @@ int new_wcs(const char* infn, int extension,
         }
         if (streq(key, "DATE") && qfits_header_getstr(outhdr, key)) {
             // If the input header already had a DATE card,
-            snprintf(newkey, FITS_LINESZ+1, "Original WCS key: \"%s\"", key);
+            snprintf(newkey, FITS_LINESZ, "Original WCS key: \"%s\"", key);
             qfits_header_append(outhdr, "COMMENT", newkey, NULL, NULL);
-            snprintf(newkey, FITS_LINESZ+1, "_%.7s", key);
+            snprintf(newkey, FITS_LINESZ, "_%.7s", key);
             strcpy(key, newkey);
             line[0] = '_';
         }

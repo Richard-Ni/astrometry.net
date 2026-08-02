@@ -24,8 +24,15 @@
 <p>
     Many API calls to retrieve information about existing images can be made
     without permission. For example, you can retrieve the list of annotated
-    objects in an image via
-    {% url 'api/jobs/JOBID/annotations' %}.
+    objects in an image via a URL like <a href="https://nova.astrometry.net/api/jobs/123456/annotations">https://nova.astrometry.net/api/jobs/JOBID/annotations/</a>.
+</p>
+<p>
+  <b>However</b>, in order to protect against web scraper bots driven by the
+  so-called "AI" bubble, when downloading files programatically, you must set
+  the HTTP request header:
+  <pre>
+    Referer: https://nova.astrometry.net/api/login
+  </pre>
 </p>
 <p>
     If you want to modify data on the site, you need to grab an <u>API key</u> first.
@@ -56,11 +63,11 @@
 
 <p>
 Then head on over to the
-<a href="http://astrometry.net/doc/net/api.html">API Documentation</a>, such as it is.
+<a href="https://astrometry.net/doc/net/api.html">API Documentation</a>, such as it is.
 </p>
 
 <p>
-Further questions can go to <a href="http://astrometry.net/group">the Astrometry.net group</a>
+Further questions can go to <a href="https://groups.google.com/g/astrometry">the Astrometry.net group</a>
 </p>
 
 <h2>Sample Code</h2>

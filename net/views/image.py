@@ -47,6 +47,8 @@ from astrometry.net.views.license import LicenseForm
 
 from astrometry.net.views.enhance import *
 
+from astrometry.net.views.human import human_required, human_or_ref_required
+
 import json
 
 # repeat this import to override somebody else's import of the datetime module
@@ -84,6 +86,7 @@ class UserImageForm(forms.ModelForm):
                 if user_image and user_image in album.user_images.all():
                     self.fields['album'].initial = album.id
 
+@human_required
 def user_image(req, user_image_id=None):
     uimage = get_object_or_404(UserImage, pk=user_image_id)
 
@@ -108,6 +111,8 @@ def user_image(req, user_image_id=None):
     dim = uimage.image.get_display_image(tempfiles=req.tempfiles)
     images['original_display'] = reverse('serve_image', kwargs={'id':dim.id})
     images['original'] = reverse('serve_image', kwargs={'id':uimage.image.id})
+    images['wwt_original_display'] = reverse('wwt_serve_image', kwargs={'id':dim.id})
+    images['wwt_original'] = reverse('wwt_serve_image', kwargs={'id':uimage.image.id})
     image_type = 'original'
     if job:
         if job.calibration:
@@ -155,8 +160,8 @@ def user_image(req, user_image_id=None):
         wcs = calib.raw_tan
         if calib.tweaked_tan is not None:
             wcs = calib.tweaked_tan
-        imgurl   = req.build_absolute_uri(images['original'])
-        thumburl = req.build_absolute_uri(images['original_display'])
+        wwt_imgurl   = req.build_absolute_uri(images['wwt_original'])
+        wwt_thumburl = req.build_absolute_uri(images['wwt_original_display'])
 
         fits = uimage.image.disk_file.is_fits_image()
         y = wcs.imageh - wcs.crpix2
@@ -167,7 +172,7 @@ def user_image(req, user_image_id=None):
         if parity:
             orient = 360. - orient
 
-        wwturl = 'http://www.worldwidetelescope.org/wwtweb/ShowImage.aspx?reverseparity=%s&scale=%.6f&name=%s&imageurl=%s&credits=Astrometry.net+User+(All+Rights+Reserved)&creditsUrl=&ra=%.6f&dec=%.6f&x=%.1f&y=%.1f&rotation=%.2f&thumb=%s' % (parity, wcs.get_pixscale(), uimage.original_file_name, imgurl, wcs.crval1, wcs.crval2, wcs.crpix1, y, orient, thumburl)
+        wwturl = 'http://www.worldwidetelescope.org/wwtweb/ShowImage.aspx?reverseparity=%s&scale=%.6f&name=%s&imageurl=%s&credits=Astrometry.net+User+(All+Rights+Reserved)&creditsUrl=&ra=%.6f&dec=%.6f&x=%.1f&y=%.1f&rotation=%.2f&thumb=%s' % (parity, wcs.get_pixscale(), uimage.original_file_name, wwt_imgurl, wcs.crval1, wcs.crval2, wcs.crpix1, y, orient, wwt_thumburl)
     else:
         wwturl = None
 
@@ -265,7 +270,7 @@ def edit(req, user_image_id=None):
     }
     return render(req, 'user_image/edit.html', context)
 
-def serve_image(req, id=None, image=None):
+def serve_image_common(req, id=None, image=None):
     if image is None:
         image = get_object_or_404(Image, pk=id)
     res = HttpResponse(content_type=image.get_mime_type())
@@ -279,6 +284,15 @@ def serve_image(req, id=None, image=None):
     image.render(res, tempfiles=req.tempfiles)
     return res
 
+@human_or_ref_required
+def serve_image(req, **kwargs):
+    return serve_image_common(req, **kwargs)
+
+# Special URL for WWT that doesn't do the human check
+def wwt_serve_image(req, **kwargs):
+    return serve_image_common(req, **kwargs)
+
+@human_or_ref_required
 def serve_thumbnail_image(req, id=None):
     image = get_object_or_404(Image, pk=id)
     thumb = image.get_thumbnail()
@@ -286,6 +300,7 @@ def serve_thumbnail_image(req, id=None):
         return HttpResponse('missing image file')
     return serve_image(req, image=thumb)
 
+@human_or_ref_required
 def grid_image(req, jobid=None, size='full'):
     from astrometry.plot.plotstuff import (Plotstuff,
                                            PLOTSTUFF_FORMAT_JPG,
@@ -361,6 +376,7 @@ def grid_image(req, jobid=None, size='full'):
     res['Content-Type'] = 'image/jpeg'
     return res
 
+@human_or_ref_required
 def annotated_image(req, jobid=None, size='full'):
     job = get_object_or_404(Job, pk=jobid)
     ui = job.user_image
@@ -444,6 +460,7 @@ def annotated_image(req, jobid=None, size='full'):
     res['Content-Type'] = 'image/jpeg'
     return res
 
+@human_or_ref_required
 def onthesky_image(req, zoom=None, calid=None):
     from astrometry.net.views.onthesky import plot_aitoff_wcs_outline
     from astrometry.net.views.onthesky import plot_wcs_outline
@@ -549,22 +566,27 @@ def legacysurvey_viewer_image(req, cal, size, layer):
     print('Redirecting to URL', url)
     return HttpResponseRedirect(url)
 
+@human_or_ref_required
 def sdss_image(req, calid=None, size='full'):
     cal = get_object_or_404(Calibration, pk=calid)
     return legacysurvey_viewer_image(req, cal, size, 'sdss')
 
+@human_or_ref_required
 def galex_image(req, calid=None, size='full'):
     cal = get_object_or_404(Calibration, pk=calid)
     return legacysurvey_viewer_image(req, cal, size, 'galex')
 
+@human_or_ref_required
 def unwise_image(req, calid=None, size='full'):
     cal = get_object_or_404(Calibration, pk=calid)
     return legacysurvey_viewer_image(req, cal, size, 'unwise-neo6')
 
+@human_or_ref_required
 def legacysurvey_image(req, calid=None, size='full'):
     cal = get_object_or_404(Calibration, pk=calid)
     return legacysurvey_viewer_image(req, cal, size, 'ls-dr9')
 
+@human_or_ref_required
 def red_green_image(req, job_id=None, size='full'):
     from astrometry.plot.plotstuff import (Plotstuff,
                                            PLOTSTUFF_FORMAT_PNG,
@@ -643,6 +665,7 @@ def red_green_image(req, job_id=None, size='full'):
     res['Content-Type'] = 'image/png'
     return res
 
+@human_or_ref_required
 def extraction_image(req, job_id=None, size='full'):
     from astrometry.plot.plotstuff import (Plotstuff,
                                            PLOTSTUFF_FORMAT_PNG,
@@ -743,6 +766,7 @@ class ShowImagesForm(forms.Form):
                                         attrs={'onClick':'this.form.submit();'}),
                                     initial=False, required=False)
 
+#@human_required
 def index(req, images=None,
           template_name='user_image/index.html', context={}):
     if images is None:
@@ -856,6 +880,7 @@ def index_location(req):
     }
     return index(req, images, 'user_image/index_location.html', context)
 
+@human_required
 def index_nearby(req, user_image_id=None):
     image = get_object_or_404(UserImage, pk=user_image_id)
     images = image.get_neighbouring_user_images()
@@ -948,6 +973,38 @@ def axy_file(req, jobid=None):
     res['Content-Disposition'] = 'attachment; filename=axy.fits'
     return res
 
+def image_rd_file(req, jobid=None):
+    job = get_object_or_404(Job, pk=jobid)
+
+    extra_args = ''
+    ui = job.user_image
+    sub = ui.submission
+    if sub.use_sextractor:
+        extra_args = ' -X X_IMAGE -Y Y_IMAGE'
+    wcsfn = job.get_wcs_file()
+    axyfn = job.get_axy_file()
+    rdfn = get_temp_file(tempfiles=req.tempfiles)
+    cmd = 'wcs-xy2rd -w %s -i %s -o %s' % (wcsfn, axyfn, rdfn) + extra_args
+    logmsg('Running: ' + cmd)
+    (rtn, out, err) = run_command(cmd)
+    if rtn:
+        logmsg('out: ' + out)
+        logmsg('err: ' + err)
+        return HttpResponse('wcs-xy2rd failed: out ' + out + ', err ' + err)
+    from astrometry.util.fits import fits_table
+    xy = fits_table(axyfn)
+    rd = fits_table(rdfn)
+    for c in xy.get_columns():
+        rd.set(c, xy.get(c))
+    rd.writeto(rdfn)
+
+    res = HttpResponse(open(rdfn, 'rb'))
+    res['Content-Type'] = 'application/fits'
+    res['Content-Length'] = file_size(rdfn)
+    res['Content-Disposition'] = 'attachment; filename=image-radec.fits'
+    return res
+
+@human_or_ref_required
 def corr_file(req, jobid=None):
     job = get_object_or_404(Job, pk=jobid)
     f = open(job.get_corr_file(), 'rb')
@@ -956,6 +1013,7 @@ def corr_file(req, jobid=None):
     res['Content-Disposition'] = 'attachment; filename=corr.fits'
     return res
 
+@human_or_ref_required
 def new_fits_file(req, jobid=None):
     job = get_object_or_404(Job, pk=jobid)
     wcsfn = job.get_wcs_file()
@@ -992,7 +1050,7 @@ def new_fits_file(req, jobid=None):
     return res
 
 def kml_file(req, jobid=None):
-    #return HttpResponse('KMZ requests are off for now.  Post at https://groups.google.com/forum/#!forum/astrometry for help.')
+    return HttpResponse('KMZ requests are off for now.  Post at https://groups.google.com/forum/#!forum/astrometry for help.')
     import tempfile
     import PIL.Image
     job = get_object_or_404(Job, pk=jobid)
@@ -1225,7 +1283,8 @@ if __name__ == '__main__':
     #r = c.get('/sdss_image_display/4629768')
     #r = c.get('/user_images/1533706')
     #r = c.get('/kml_file/2646067?ignore=.kmz')
-    r = c.get('/new_fits_file/9797275')
+    #r = c.get('/new_fits_file/9797275')
+    r = c.get('/image_rd_file/2646067')
     #print(r)
     with open('out.html', 'wb') as f:
         for x in r:

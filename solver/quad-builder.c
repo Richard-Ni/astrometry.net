@@ -113,11 +113,15 @@ static void add_interior_stars(quadbuilder_t* qb,
                                int ninbox, int* inbox, quad* q,
                                int starnum, int dimquads, int beginning) {
     int i;
+    if (dimquads > DQMAX) {
+        ERROR("dimquads %i too large\n", dimquads);
+        return;
+    }
     for (i=beginning; i<ninbox; i++) {
         int iC = inbox[i];
         q->star[starnum] = qb->starinds[iC];
         // Did we just add the last star?
-        if (starnum == dimquads-1) {
+        if (starnum >= dimquads-1) {
             if (qb->check_full_quad &&
                 !qb->check_full_quad(qb, q->star, dimquads, qb->check_full_quad_token))
                 continue;
