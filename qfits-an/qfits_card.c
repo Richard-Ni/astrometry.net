@@ -125,7 +125,7 @@ void qfits_card_build(
         len = strlen(val);
         /* 72 is 80 (FITS line size) - 8 (sizeof COMMENT or HISTORY) */
         if (len>72) len=72;
-        strncpy(line+8, val, len);
+        memcpy(line+8, val, len);
         return;
     }
 
@@ -237,7 +237,7 @@ char* qfits_getkey_r(const char* line, char* key)
     i=0;
     while (line[i]!='=' && i<80) i++;
     if (i>=80) {
-        qfits_error("qfits_getkey: cannot find equal sign in line: \"%.80s\"\n", line);
+        qfits_error("qfits_getkey: cannot find equal sign in line: \"%.80s\"", line);
         return NULL;
     }
     i--;

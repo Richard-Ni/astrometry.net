@@ -33,6 +33,7 @@ from django.http import HttpResponseRedirect
 from astrometry.net.tmpfile import get_temp_file
 from astrometry.util.run_command import run_command
 
+from astrometry.net.views.human import human_required, human_or_ref_required
 
 def index(req, user_id):
     submitter = None
@@ -321,6 +322,7 @@ def job_log_file2(req, jobid=None):
     res['Content-type'] = 'text/plain'
     return res
 
+@human_or_ref_required
 def status(req, subid=None):
     sub = get_object_or_404(Submission, pk=subid)
 
@@ -370,7 +372,12 @@ def handle_file_upload(file, tempfiles=None):
 if __name__ == '__main__':
     from django.test import Client
     c = Client()
-    r = c.get('/joblog2/6606830')
+    headers = dict(Referer='/index.html')
+    #r = c.get('/joblog2/6606830')
+    #r = c.get('/user_images/12343343')
+    #r = c.get('/status/13904401', headers=dict(Referer='/index.html'))
+    r = c.get('/status/13911329', headers=headers)
+    print('Response:', r)
     with open('out.html', 'wb') as f:
         for x in r:
             f.write(x)
